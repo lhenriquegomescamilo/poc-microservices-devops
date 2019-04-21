@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: {{ include "users.fullname" . }}
-    namespace: {{.Values.metadata.namepsace}}
     labels:
         app.kubernetes.io/name: {{ include "users.name" . }}
         helm.sh/chart: {{ include "users.chart" . }}

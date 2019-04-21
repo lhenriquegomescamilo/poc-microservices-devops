@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
     name: {{ include "database.fullname" . }}
-    namespace: {{.Values.metadata.namepsace}}
     labels:
         app.kubernetes.io/name: {{ include "database.name" . }}
         helm.sh/chart: {{ include "database.chart" . }}
