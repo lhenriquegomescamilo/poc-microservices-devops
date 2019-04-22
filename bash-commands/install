@@ -1,0 +1,28 @@
+curl -fsSL https://get.docker.com | bash
+mkdir -p /etc/systemd/docker.service.d
+curl -s  https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" > /etc/apt/sources.list.d/kubernetes.list
+apt-get update
+apt-get install kubelet kubeadm kubectl -y
+vi /etc/docker/daemon.json
+
+{
+        "exec-opts": ["native.cgroupdriver=systemd"],
+        "log-driver": "json-file",
+        "log-opts": {
+                "max-size": "100m"
+        },
+        "storage-driver": "overlay2"
+}
+systemctl daemon-reload
+systemctl restart docker
+kubeadm config images pull
+kubeadm init --apiserver-cert-extra-sans=191.232.237.25
+# nesse momento pode adicionar(joins)  os nodes
+wget https://storage.googleapis.com/kubernetes-helm/helm-v2.12.3-linux-amd64.tar.gz
+tar -xvzf helm-v2.12.3-linux-amd64.tar.gz
+mv linux-amd64/helm /usr/local/bin/
+mv linux-amd64/tiller /usr/local/bin/
+kubectl create serviceaccount --namespace=kube-system tiller
+kubectl create clusterrolebinding tiller-cluster-role --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+kubectl patch deployments -n kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
