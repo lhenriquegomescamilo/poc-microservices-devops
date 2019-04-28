@@ -1,4 +1,4 @@
-env:
+lsenv:
   open:
     STORAGE: local
     DISABLE_API: false
